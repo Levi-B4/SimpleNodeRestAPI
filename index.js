@@ -1,15 +1,23 @@
-//build a server with nodes http module
-import { createServer } from "http";
-const port = 3001;
-const server = createServer();
+//import routes
+import routes from "./routes/routes.js";
+//Import packages
+import bodyParser from "body-parser";
+import express from "express";
+//set port
+const port = 3002;
+const app = express();
 
-server.on("request", (request, response) => {
-	console.log(`URL: ${request.url}`);
-		response.end("Hello, server!");
-});
-
-//Start the server
-server.listen(port, (error) => {
+//parses request into a JSON object
+app.use(express.json());
+app.use(
+	express.urlencoded({
+		extended: true,
+	})
+);
+//handle requests
+routes(app);
+//handle errors
+const server = app.listen(port, (error) => {
 	if (error) return console.log(`Error: ${error}`);
-		console.log(`Server is listening on port ${port}`);
+		console.log(`Server listening on port ${server.address().port}`);
 });
